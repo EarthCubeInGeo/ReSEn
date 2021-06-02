@@ -129,7 +129,8 @@ class DockerHelper():
         # get terminal dimensions
         def get_terminal_dims():
             """Returns integers rows and columns of the terminal."""
-            return [int(x) for x in os.popen('stty size', 'r').read().split()]
+            terminal_size = os.get_terminal_size()
+            return terminal_size.lines, terminal_size.columns
 
         # progress bar
         def update_bar(sum_total,accumulated,t0,current_time, init_bar_chars=34):
