@@ -571,9 +571,10 @@ class Resen():
 
         # form python command to stop jupyter and execute it
         port = bucket['jupyter']['port']
-        python_cmd = 'from notebook.notebookapp import shutdown_server, list_running_servers; '
-        python_cmd += 'svrs = [x for x in list_running_servers() if x[\\\"port\\\"] == %s]; ' % (port)
-        python_cmd += 'sts = True if len(svrs) == 0 else shutdown_server(svrs[0]); print(sts)'
+        python_cmd = 'exec(\\\"try:  from jupyter_server.serverapp import shutdown_server, list_running_servers\\n'
+        python_cmd += 'except:  from notebook.notebookapp import shutdown_server, list_running_servers\\n'
+        python_cmd += 'svrs = [x for x in list_running_servers() if x[\\\\\\"port\\\\\\"] == %s]; ' % (port)
+        python_cmd += 'sts = True if len(svrs) == 0 else shutdown_server(svrs[0]); print(sts)\\\")'
         command = "bash -cl '%s/bin/python -c \"%s \"'" % (envpath,python_cmd)
         status = self.execute_command(bucket_name,command,detach=False)
 
